@@ -18,13 +18,12 @@ app.get("/products/:pid", (req, res) => {
 	res.setHeader("Content-Type", "application/json");
 
 	let productId = parseInt(req.params.pid);
-
 	let filteredProducts = products.filter((product) => product.id === productId);
-	if (filteredProducts.length) {
-		res.end(JSON.stringify({ result: filteredProducts[0] }, null, 3));
-	} else {
-		res.end(JSON.stringify({ result: "Product missing!" }, null, 3));
-	}
+	let response = filteredProducts.length
+		? filteredProducts[0]
+		: "Product missing!";
+
+	return res.end(JSON.stringify({ result: response }, null, 3));
 });
 
 app.listen(8080, () => {
