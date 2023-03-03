@@ -1,5 +1,5 @@
 import ProductManager from "./ProductManager.js";
-import express from "express";
+import express, { query } from "express";
 
 const app = express();
 const manager = new ProductManager();
@@ -33,7 +33,18 @@ app.get("/usuario", (req, res) => {
 
 app.get("/products", (req, res) => {
 	res.setHeader("Content-Type", "application/json");
-	res.end(JSON.stringify(products, null, 3));
+
+	let limit = parseInt(req.query.limit);
+	let limitedProducts = limit ? products.slice(0, limit) : products;
+
+	let productId = parseInt(req.query.id);
+	if (productId < 0 || !productId)
+		return res.end(JSON.stringify(limitedProducts, null, 3));
+
+	let filteredProducts = limitedProducts.filter(
+		(product) => product.id === productId
+	);
+	res.end(JSON.stringify(filteredProducts, null, 3));
 });
 
 app.listen(8080, () => {
