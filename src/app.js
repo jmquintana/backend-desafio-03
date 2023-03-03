@@ -31,70 +31,28 @@ app.get("/usuario", (req, res) => {
 	);
 });
 
-app.get("/products", (req, res) => {
+app.get("/products/", (req, res) => {
 	res.setHeader("Content-Type", "application/json");
 
 	let limit = parseInt(req.query.limit);
 	let limitedProducts = limit ? products.slice(0, limit) : products;
 
-	let productId = parseInt(req.query.id);
-	if (productId < 0 || !productId)
-		return res.end(JSON.stringify(limitedProducts, null, 3));
+	return res.end(JSON.stringify({ result: limitedProducts }, null, 3));
+});
 
-	let filteredProducts = limitedProducts.filter(
-		(product) => product.id === productId
-	);
-	res.end(JSON.stringify(filteredProducts, null, 3));
+app.get("/products/:pid", (req, res) => {
+	res.setHeader("Content-Type", "application/json");
+
+	let productId = parseInt(req.params.pid);
+
+	let filteredProducts = products.filter((product) => product.id === productId);
+	if (filteredProducts.length) {
+		res.end(JSON.stringify({ result: filteredProducts[0] }, null, 3));
+	} else {
+		res.end(JSON.stringify({ result: "Product missing!" }, null, 3));
+	}
 });
 
 app.listen(8080, () => {
 	console.log("Servidor arriba en el puerto 8080");
 });
-
-// const product1 = {
-// 	title: "producto de prueba 1",
-// 	description: "Este es un producto de prueba",
-// 	price: 1000,
-// 	thumbnail: "Sin imagen",
-// 	code: "abc123",
-// 	stock: 50,
-// };
-
-// const product2 = {
-// 	title: "producto de prueba 2",
-// 	description: "Este es un producto de prueba",
-// 	price: 100,
-// 	thumbnail: "Sin imagen",
-// 	code: "abc456",
-// 	stock: 20,
-// };
-
-// const product3 = {
-// 	title: "producto de prueba 3",
-// 	description: "Este es un producto de prueba",
-// 	price: 50,
-// 	thumbnail: "Sin imagen",
-// 	code: "abc789",
-// 	stock: 1000,
-// };
-
-// const product4 = {
-// 	title: "producto de prueba 4",
-// 	description: "Este es un producto de prueba",
-// 	price: 500,
-// 	thumbnail: "Sin imagen",
-// 	code: "abc321",
-// 	stock: 25,
-// };
-
-// await manager.addProduct(product1);
-// await manager.addProduct(product2);
-// await manager.addProduct(product3);
-// await manager.addProduct(product4);
-
-// await manager.updateProduct(1, product1);
-// await manager.updateProduct(2, product2);
-// await manager.deleteProduct(3);
-// await manager.deleteProduct(4);
-
-// await manager.addProduct(product4);
